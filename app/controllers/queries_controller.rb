@@ -8,14 +8,15 @@ class QueriesController < ApplicationController
   def list; end
 
   def listpost
-    @theme = params[:theme]
+    @theme = theme_keywords(params[:theme])
+    p @theme
     @source = [params[:dcard], params[:ptt]].delete_if { |x| x == nil }
     @start = params[:start].to_date
     @end = params[:end].to_date
     @type = case true
             when params[:type] == '回文' then "回文"
             else
-              "文章"
+              "主文"
             end
     @sentiment = case true
                  when params[:sentiment] == "不分情緒"  then ""
@@ -35,7 +36,7 @@ class QueriesController < ApplicationController
 
       comment_search = Comment.joins(post: [board: :source]).where(comments: { posts: { boards: { sources: { name: @source } } } }).ransack(created_at_gt: @start, created_at_lt: @end + 1,sentiment_cont_any: @sentiment).result
 
-      @result = comment_search.ransack(content_cont_any: @theme,sentiment_cont_any: @sentiment).result.or(comment_search.where(pid: post_result))
+      @result = comment_search.ransack(content_cont_any: @theme).result.or(comment_search.where(pid: post_result))
     else
       @result = Post.ransack(created_at_gt: @start, created_at_lt: @end + 1, title_or_content_cont_any: @theme,sentiment_cont_any: @sentiment).result.joins(board: :source).where(boards: { sources: { name: @source } })
     end
