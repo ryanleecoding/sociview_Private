@@ -8,11 +8,11 @@ class QueriesController < ApplicationController
   def list; end
 
   def listpost
-    radio_search_box()
+    # radio_search_box()
     @theme = theme_keywords(params[:theme])
-    # @source = [params[:dcard], params[:ptt]].delete_if { |x| x == nil }
-    # @start = params[:start].to_date
-    # @end = params[:end].to_date
+    @source = [params[:dcard], params[:ptt]].delete_if { |x| x == nil }
+    @start = params[:start].to_date
+    @end = params[:end].to_date
     @type = case true
             when params[:type] == '回文' then "回文"
             else
