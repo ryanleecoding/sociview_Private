@@ -8,8 +8,7 @@ class QueriesController < ApplicationController
   def list; end
 
   def listpost
-    # radio_search_box()
-    @theme = theme_keywords(params[:theme])
+    @theme = params[:theme]
     @source = [params[:dcard], params[:ptt]].delete_if { |x| x == nil }
     @start = params[:start].to_date
     @end = params[:end].to_date
